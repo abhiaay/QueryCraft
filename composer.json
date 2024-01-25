@@ -1,0 +1,21 @@
+{
+    "name": "abhiaay/query-craft",
+    "description": "Laravel filter and sort by eloquent query",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Abhiaay\\Filterable\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Abhi Adhitya Yustho",
+            "email": "abhiyustho@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "illuminate/database": "^10.0"
+    }
+}
