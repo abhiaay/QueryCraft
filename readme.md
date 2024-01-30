@@ -71,7 +71,7 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $craft = Craft::parse($request);
-        return Post::filter($craft)->paginate($request->input('per_page'));
+        return Post::craft($craft)->paginate($request->input('per_page'));
     }
 }
 ```
