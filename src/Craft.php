@@ -60,6 +60,10 @@ class Craft
                 foreach ($filter as $operator => $value) {
                     $operation = Operation::tryFrom($operator);
 
+                    if (in_array($operation, Operation::arrayable())) {
+                        $value = explode(',', $value);
+                    }
+
                     $this->addFilterValue(new FilterValue(
                         $column,
                         $operation,

@@ -41,4 +41,13 @@ enum Operation: string
             default => null,
         };
     }
+
+    public static function arrayable(): array
+    {
+        return [
+            self::IN,
+            self::NOT_IN,
+            self::BETWEEN
+        ];
+    }
 }
