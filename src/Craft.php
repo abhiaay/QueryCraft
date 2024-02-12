@@ -7,7 +7,7 @@ use Abhiaay\QueryCraft\Enum\Sort;
 use Illuminate\Http\Request;
 
 /**
- * @method static Filter parse(Request $request)
+ * @method static Craft parse(Request $request)
  */
 class Craft
 {
@@ -53,10 +53,11 @@ class Craft
 
     protected function parse(Request $request)
     {
-        if ($request->filled('filter')) {
+        // make empty the from previous
+        self::$filterValues = [];
+        self::$sortValues = [];
 
-            // make empty the from previous
-            self::$filterValues = [];
+        if ($request->filled('filter')) {
 
             $filters = $request->input('filter');
 
@@ -82,9 +83,6 @@ class Craft
             if (is_array($sorts)) {
                 throw new \Exception('Craft::parse() - sort cant be array must string');
             }
-
-            // make empty the from previous
-            self::$sortValues = [];
 
             $sorts = explode(',', $sorts);
 
