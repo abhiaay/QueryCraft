@@ -65,7 +65,7 @@ class Craft
                 foreach ($filter as $operator => $value) {
                     $operation = Operation::tryFrom($operator);
 
-                    if (in_array($operation, Operation::arrayable())) {
+                    if (in_array($operation, Operation::arrayable()) && !is_array($value)) {
                         $value = explode(',', $value);
                     }
 
