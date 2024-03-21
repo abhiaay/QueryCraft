@@ -4,9 +4,10 @@ namespace Abhiaay\QueryCraft;
 
 use Abhiaay\QueryCraft\Enum\Operation;
 use Illuminate\Database\Eloquent\Builder;
+use Abhiaay\QueryCraft\Enum\Cast;
 
 /**
- * @method static \Illuminate\Database\Eloquent\Builder Craft(\Abhiaay\Filterable\Craft $craft)
+ * @method static \Illuminate\Database\Eloquent\Builder craft(\Abhiaay\Filterable\Craft $craft)
  */
 trait QueryCraft
 {
@@ -19,6 +20,16 @@ trait QueryCraft
      * @return [alias => column_name]
      */
     abstract public function sortableColumns(): array;
+
+    /**
+     * cast value to given cast
+     *
+     * @return array<string,Cast>
+     */
+    public function castsQueryCraft(): array
+    {
+        return [];
+    }
 
     /**
      * @todo add capabilities for and & or operation
@@ -59,6 +70,8 @@ trait QueryCraft
                 $operator = $filterValue->operation;
             }
 
+            $value = $this->casting($filterValue);
+
             // Build the query
             switch ($operator) {
                 case Operation::IS:
@@ -73,16 +86,16 @@ trait QueryCraft
                 case Operation::REGEX:
                 case Operation::EXISTS:
                 case Operation::TYPE:
-                    $query->where($filterableColumn, $operator->getOperation(), $filterValue->value);
+                    $query->where($filterableColumn, $operator->getOperation(), $value);
                     break;
                 case Operation::IN:
-                    $query->whereIn($filterableColumn, $filterValue->value);
+                    $query->whereIn($filterableColumn, $value);
                     break;
                 case Operation::NOT_IN:
-                    $query->whereNotIn($filterableColumn, $filterValue->value);
+                    $query->whereNotIn($filterableColumn, $value);
                     break;
                 case Operation::BETWEEN:
-                    $query->whereBetween($filterableColumn, $filterValue->value);
+                    $query->whereBetween($filterableColumn, $value);
                     break;
             }
         }
@@ -110,5 +123,18 @@ trait QueryCraft
         }
 
         return $query;
+    }
+
+    private function casting(FilterValue $filterValue): mixed
+    {
+        $casts = $this->castsQueryCraft();
+        if($casts && !empty($casts) && in_array($filterValue->column, array_keys($casts))) {
+            /**
+             * @var Cast
+             */
+            $cast = $casts[$filterValue->column];
+            return $cast->cast($filterValue->value);
+        }
+        return $filterValue->value;
     }
 }
